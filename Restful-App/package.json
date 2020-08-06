@@ -1,0 +1,27 @@
+{
+  "name": "epayco",
+  "version": "1.0.0",
+  "description": "Epayco-Restful-App",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/miguel2m/epayco.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/miguel2m/epayco/issues"
+  },
+  "homepage": "https://github.com/miguel2m/epayco#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-validator": "^6.6.1",
+    "jsonwebtoken": "^8.5.1"
+  }
+}
