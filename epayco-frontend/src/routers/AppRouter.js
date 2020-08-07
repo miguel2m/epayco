@@ -8,9 +8,12 @@ import {
 
 import Login from '../components/ui/Login';
 import Signup from '../components/ui/SignUp';
-import DashboardRoutes from './DashboardRoutes';
 import { PublicRoute } from './PublicRoute';
 import { PrivateRoute } from './PrivateRoute';
+import Articulos from '../components/Dashboard/Articulos';
+import ConsultarSaldo from '../components/Dashboard/ConsultarSaldo';
+import RecargarSaldo from '../components/Dashboard/RecargarSaldo';
+import { Navbar } from '../components/ui/Navbar';
 
 
 export default function AppRouter() {
@@ -20,7 +23,8 @@ export default function AppRouter() {
     return (
         <Router>
             <div>
-                
+                <Navbar/>
+                <div className="container mt-2">
                 <Switch> 
                     <PublicRoute 
                         exact 
@@ -38,15 +42,27 @@ export default function AppRouter() {
 
                     <PrivateRoute 
                         exact 
-                        path="/" 
-                        component={ DashboardRoutes } 
+                        path="/catalogo" 
+                        component={ Articulos } 
                         isAuthenticated={ !!values }
                     />
                     
+                    <PrivateRoute 
+                        exact 
+                        path="/consultar-saldo" 
+                        component={ ConsultarSaldo } 
+                        isAuthenticated={ !!values }
+                    />
+                    <PrivateRoute 
+                        exact 
+                        path="/recargar-saldo" 
+                        component={ RecargarSaldo } 
+                        isAuthenticated={ !!values }
+                    />
                     
-                    
-                    <Redirect to="/" />  
+                    <Redirect to="/catalogo" />  
                 </Switch>
+                </div>
             </div>
         </Router>
     )

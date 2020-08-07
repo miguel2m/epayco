@@ -11,39 +11,40 @@ export const Navbar = () => {
             
             <Link 
                 className="navbar-brand" 
-                to="/"
+                to={ `./` }
             >
                 Epayco
             </Link>
+   
 
             <div className="navbar-collapse">
                 <div className="navbar-nav">
-                    <NavLink 
+                    <Link 
                         activeClassName="active"
                         className="nav-item nav-link" 
                         exact
-                        to="/catalogo"
+                        to={ `./catalogo` }
                     >
                         Catalogo
-                    </NavLink>
+                    </Link>
 
-                    <NavLink 
+                    <Link 
                         activeClassName="active"
                         className="nav-item nav-link" 
                         exact
-                        to="/consultar-saldo"
+                        to={ `./consultar-saldo` }
                     >
                         Consultar
-                    </NavLink>
+                    </Link>
 
-                    <NavLink 
+                    <Link 
                         activeClassName="active"
                         className="nav-item nav-link" 
                         exact
-                        to="/recargar-saldo"
+                        to={ `./recargar-saldo` }
                     >
                         Recargar
-                    </NavLink>
+                    </Link>
                 </div>
             </div>
 
