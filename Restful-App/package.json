@@ -19,10 +19,12 @@
   },
   "homepage": "https://github.com/miguel2m/epayco#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-validator": "^6.6.1",
     "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.9.27",
     "nodemailer": "^6.4.11"
   }
 }

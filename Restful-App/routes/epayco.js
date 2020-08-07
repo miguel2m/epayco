@@ -12,6 +12,8 @@ const { validarCampos } = require('../middlewares/validar-campos');
 const { validarJWT } = require('../middlewares/validar-jwt');// Valida Tokens
 const { sendEmail } = require('../middlewares/enviar-email');// Valida Tokens
 
+const User = require('../models/User')
+
 const router = Router();
 
 //Crea un nuevo usuario
@@ -23,10 +25,21 @@ router.post(
     check('email', 'El email es obligatorio').isEmail(),
     check('celular', 'El celular es obligatorio').not().isEmpty(),
     validarCampos
-  ], (req, res) => {
+  ], async(req, res) => {
     const { docuemnto, nombre, email, celular } = req.body;
-
-    res.json({ ok: true })
+    try {
+      let user =await User.findOne({email})
+      if (!user){
+        const user = new User(req.body);
+        await user.save();
+        res.status(201).json({ ok: true })
+      }else{
+        res.status(400).json({ ok: false, error: `${email} ya registrado` })
+      }
+    } catch (error) {
+      res.status(500).json({ ok: false, error: error.keyValue })
+    }
+    
   });
 
 //recargar-saldo
@@ -90,11 +103,21 @@ router.post(
     validarCampos
   ],async (req, res) => {
     const { email } = req.body;
-    // Generar JWT
-    const token = await generarJWT(  req.email );
-    //TODO enviar UID
+    try {
+      let user =await User.findOne({email})
+      console.log(user)
+      if (user){
+        // Generar JWT
+        const token = await generarJWT(  req.email );
+        //TODO enviar UID
+        res.status(200).json({ ok: true ,user,   token , email })
+      }else{
+        res.status(400).json({ ok: false , error: `Email no registrado` })
+      }
+    } catch (error) {
+      res.status(500).json({ ok: false,  error })
+    }
     
-    res.status(200).json({ ok: true ,   token })
   });
 
 //Cerrar sesion
