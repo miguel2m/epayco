@@ -1,5 +1,6 @@
 import React from 'react'
 import { useForm } from '../../hooks/useForm';
+import { fetchSinToken } from '../../helper/fetchRest';
 
 export default function ConsultarSaldo() {
     const [formValues, handleInputChange] = useForm({
@@ -7,9 +8,16 @@ export default function ConsultarSaldo() {
         celular: ''
     });
     const { documento, celular } = formValues;
-    const handleSubmit = (e) =>{
+    const handleSubmit = async(e) =>{
         e.preventDefault();
-        console.log(formValues)
+        const resp = await fetchSinToken( 'consultar-saldo', { documento,celular }, 'POST' );
+        const body = await resp.json();
+        console.log(body)
+        if(body.ok)
+            console.log(body.ok)
+        else{
+            console.log(body.error)
+        }
     }
     
     return (
@@ -24,8 +32,9 @@ export default function ConsultarSaldo() {
                         <form onSubmit={handleSubmit}>
                             <div className="card-body ">
                                 <div className="form-group">
+                                    <label>Documento</label>
                                     <input
-                                        required="true"
+                                        
                                         type="text"
                                         name="documento"
                                         className="form-control"
@@ -37,8 +46,9 @@ export default function ConsultarSaldo() {
                                 </div>
                                 
                                 <div className="form-group">
+                                    <label>Celular</label>
                                     <input
-                                        required="true"
+
                                         type="text"
                                         name="celular"
                                         className="form-control"

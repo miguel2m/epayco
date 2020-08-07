@@ -1,12 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useForm } from '../../hooks/useForm';
+import { fetchSinToken } from '../../helper/fetchRest';
 
-export default function Login({history}) {
+export default function Login() {
     
     const [formValues, handleInputChange] = useForm({
         email: ''
     });
+
+    
 
     /*const handleLogin = () => {
         // history.push('/');
@@ -15,10 +18,20 @@ export default function Login({history}) {
 
     const {  email } = formValues;
 
-    const handleSubmit = (e) =>{
+    const handleSubmit = async(e) =>{
         e.preventDefault();
-        console.log(formValues);
-        history.replace('/');
+        
+        const resp = await fetchSinToken( 'login', { email }, 'POST' );
+        const body = await resp.json();
+        console.log(body)
+        if(body.ok){
+            localStorage.setItem('token', body.token ); //LocalStorage del token
+            window.location.reload();
+
+        }else{
+            console.log(body.error)
+        }
+
     }
     return (
         
@@ -31,8 +44,8 @@ export default function Login({history}) {
                         <form onSubmit={handleSubmit}>
                             <div className="card-body ">
                                 <div className="form-group">
+                                    <label>Email</label>
                                     <input
-                                        required="true"
                                         type="text"
                                         name="email"
                                         className="form-control"

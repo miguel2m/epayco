@@ -1,16 +1,24 @@
 import React from 'react'
 import { useForm } from '../../hooks/useForm';
+import { fetchSinToken } from '../../helper/fetchRest';
 
 export default function RecargarSaldo() {
     const [formValues, handleInputChange] = useForm({
         documento: '',
         celular: '',
-        valor: ''
+        monto: ''
     });
-    const { documento, celular,valor } = formValues;
-    const handleSubmit = (e) =>{
+    const { documento, celular,monto } = formValues;
+    const handleSubmit = async(e) =>{
         e.preventDefault();
-        console.log(formValues)
+        const resp = await fetchSinToken( 'recargar-saldo', { documento,celular,monto }, 'POST' );
+        const body = await resp.json();
+        console.log(body)
+        if(body.ok)
+            console.log(body.ok)
+        else{
+            console.log(body.error)
+        }
     }
     return (
         <div className="container mt-5">
@@ -22,8 +30,9 @@ export default function RecargarSaldo() {
                         <form onSubmit={handleSubmit}>
                             <div className="card-body ">
                                 <div className="form-group">
+                                    <label>Documento</label>
                                     <input
-                                        required="true"
+                                        
                                         type="text"
                                         name="documento"
                                         className="form-control"
@@ -35,8 +44,9 @@ export default function RecargarSaldo() {
                                 </div>
                                 
                                 <div className="form-group">
+                                    <label>Celular</label>
                                     <input
-                                        required="true"
+                                       
                                         type="text"
                                         name="celular"
                                         className="form-control"
@@ -48,14 +58,15 @@ export default function RecargarSaldo() {
                                 </div>
 
                                 <div className="form-group">
+                                    <label>Valor</label>
                                     <input
-                                        required="true"
+                                       
                                         type="number"
-                                        name="valor"
+                                        name="monto"
                                         className="form-control"
                                         placeholder="Valor"
                                         autoComplete="off"
-                                        value={valor}
+                                        value={monto}
                                         onChange={handleInputChange}
                                     />
                                 </div>
