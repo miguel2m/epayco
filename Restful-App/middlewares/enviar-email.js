@@ -1,5 +1,4 @@
 var nodemailer = require('nodemailer');
-const { generarJWT } = require('../helpers/jwt'); // JWT Tokens
 
 // email sender function
 const sendEmail = async(req, res = response, next)=>{
@@ -13,8 +12,7 @@ const sendEmail = async(req, res = response, next)=>{
             pass: process.env.EMAIL_P
         }
     });
-    // Generar JWT
-    const token = await generarJWT( req.id, req.email );
+    
 
     // Definimos el email
     let mailOptions = {

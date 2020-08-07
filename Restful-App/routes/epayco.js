@@ -5,6 +5,8 @@
 const { Router } = require('express');
 const { check } = require('express-validator'); // Validator
 var nodemailer = require('nodemailer');//Envia correos
+const { generarJWT } = require('../helpers/jwt'); // JWT Tokens
+
 const { validarCampos } = require('../middlewares/validar-campos');
 
 const { validarJWT } = require('../middlewares/validar-jwt');// Valida Tokens
@@ -24,7 +26,7 @@ router.post(
   ], (req, res) => {
     const { docuemnto, nombre, email, celular } = req.body;
 
-    res.send('nuevo-usuario')
+    res.json({ ok: true })
   });
 
 //recargar-saldo
@@ -38,14 +40,14 @@ router.post(
   ],
   (req, res) => {
     const { docuemnto, cular, monto } = req.body;
-    res.send('recargar-saldo')
+    res.json({ ok: true })
   });
 
 //pagar
 router.post(
   '/pagar',
   [
-    check('id_sesion', 'El id de sesion es obligatorio').isString(),
+    check('token', 'El token es obligatorio').isString(),
     check('email', 'El email es obligatorio').isEmail(),
     validarCampos,
     sendEmail
@@ -58,7 +60,7 @@ router.post(
 router.post(
   '/confirmar',
   [
-    check('id_sesion', 'Debe estar registrado').not().isEmpty(),
+    check('token', 'Debe estar registrado').not().isEmpty(),
     validarCampos,
     validarJWT
   ],
@@ -68,14 +70,14 @@ router.post(
   });
 
 //consultar-saldo
-router.get('/consultar-saldo',
+router.post('/consultar-saldo',
   [
     check('documento', 'El documento es obligatorio').not().isEmpty(),
     check('celular', 'El celular es obligatorio').not().isEmpty(),
     validarCampos
   ],
   (req, res) => {
-    const { docuemnto, cular } = req.body;
+    const { docuemnto, celular } = req.body;
     res.json({ ok: true })
   });
 
@@ -84,25 +86,26 @@ router.get('/consultar-saldo',
 router.post(
   '/login',
   [
-    check('email', 'El documento es obligatorio').isEmail(),
-    check('password', 'La contraseña es obligatorio').not().isEmpty(),
+    check('email', 'El email es obligatorio').isEmail(),
     validarCampos
-  ], (req, res) => {
-    const { email, documento } = req.body;
+  ],async (req, res) => {
+    const { email } = req.body;
+    // Generar JWT
+    const token = await generarJWT(  req.email );
     //TODO enviar UID
-    res.send('login')
+    
+    res.status(200).json({ ok: true ,   token })
   });
 
 //Cerrar sesion
 router.post(
   '/logout',
   [
-    check('email', 'El documento es obligatorio').isEmail(),
-    check('password', 'La contraseña es obligatorio').not().isEmpty(),
+    check('email', 'El email es obligatorio').isEmail(),
     validarCampos
   ], (req, res) => {
-    const { email, documento } = req.body;
-    res.send('logout')
+    const { email} = req.body;
+    res.status(200).json({ ok: true })
   });
 
 
