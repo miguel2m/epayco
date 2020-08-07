@@ -40,7 +40,7 @@ export default function Signup({history}) {
             Swal.fire('Excelente', 'Registro con exito','success');
             history.replace('/login');
         }else{
-            return Swal.fire('Error', body.error,'error');
+            return Swal.fire('Error',`El campo ${JSON.stringify(body.error)} ya esta registrado`,'error');
             
         }
     }
