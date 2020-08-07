@@ -19,32 +19,32 @@ export const Navbar = () => {
 
             <div className="navbar-collapse">
                 <div className="navbar-nav">
-                    <Link 
+                    <NavLink 
                         activeClassName="active"
                         className="nav-item nav-link" 
                         exact
                         to={ `./catalogo` }
                     >
                         Catalogo
-                    </Link>
+                    </NavLink>
 
-                    <Link 
+                    <NavLink 
                         activeClassName="active"
                         className="nav-item nav-link" 
                         exact
                         to={ `./consultar-saldo` }
                     >
                         Consultar
-                    </Link>
+                    </NavLink>
 
-                    <Link 
+                    <NavLink 
                         activeClassName="active"
                         className="nav-item nav-link" 
                         exact
                         to={ `./recargar-saldo` }
                     >
                         Recargar
-                    </Link>
+                    </NavLink>
                 </div>
             </div>
 

@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useForm } from '../../hooks/useForm';
 import { fetchSinToken } from '../../helper/fetchRest';
+import validator from 'validator';
+import Swal from 'sweetalert2';
 
 export default function Login() {
     
@@ -9,22 +11,18 @@ export default function Login() {
         email: ''
     });
 
-    
-
-    /*const handleLogin = () => {
-        // history.push('/');
-        history.replace('/');
-   }*/
 
     const {  email } = formValues;
 
     const handleSubmit = async(e) =>{
         e.preventDefault();
-        
+        formValid();
+        //return Swal.fire('Error', 'Las contraseñas deben de ser iguales','error');
         const resp = await fetchSinToken( 'login', { email }, 'POST' );
         const body = await resp.json();
         console.log(body)
         if(body.ok){
+            localStorage.setItem('email', body.email );
             localStorage.setItem('token', body.token ); //LocalStorage del token
             window.location.reload();
 
@@ -32,6 +30,11 @@ export default function Login() {
             console.log(body.error)
         }
 
+    }
+    const formValid = ()=>{
+        if(!validator.isEmail( email)){
+            return Swal.fire('Error', 'Email incorrecto','error');
+        }
     }
     return (
         

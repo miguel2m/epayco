@@ -1,8 +1,8 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import { heroes } from '../../data/heroes';
 import ArticuloCard from './ArticuloCard';
 
-export default function Articulos({publisher}) {
+export default function Articulos() {
    
     return (
         <div className="container">

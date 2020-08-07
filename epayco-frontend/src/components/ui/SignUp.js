@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useForm } from '../../hooks/useForm';
 import { fetchSinToken } from '../../helper/fetchRest';
+import validator from 'validator';
+import Swal from 'sweetalert2';
 
 export default function Signup({history}) {
     const [formValues, handleInputChange] = useForm({
@@ -18,16 +20,32 @@ export default function Signup({history}) {
 
     const handleSubmit = async(e) =>{
         e.preventDefault();
-        console.log(formValues)
+        if(validator.isEmpty( documento)){
+            return Swal.fire('Error', 'Documento incorrecto','error');
+        }
+        if(validator.isEmpty( nombre)){
+            return Swal.fire('Error', 'Nombre incorrecto','error');
+        }
+        if(!validator.isEmail( email)){
+            return Swal.fire('Error', 'Email incorrecto','error');
+        }
+        if(!validator.isMobilePhone( celular,"any")){
+            return Swal.fire('Error', 'celular incorrecto','error');
+        }
+
         const resp = await fetchSinToken( 'nuevo-usuario', { documento,nombre, email,celular }, 'POST' );
         const body = await resp.json();
         console.log(body)
-        if(body.ok)
-            history.replace('/');
-        else{
-            console.log(body.error)
+        if(body.ok){
+            Swal.fire('Excelente', 'Registro con exito','success');
+            history.replace('/login');
+        }else{
+            return Swal.fire('Error', body.error,'error');
+            
         }
     }
+
+   
 
     return (
         <div className="container mt-5">

@@ -1,6 +1,8 @@
 import React from 'react'
 import { useForm } from '../../hooks/useForm';
 import { fetchSinToken } from '../../helper/fetchRest';
+import validator from 'validator';
+import Swal from 'sweetalert2';
 
 export default function RecargarSaldo() {
     const [formValues, handleInputChange] = useForm({
@@ -11,12 +13,23 @@ export default function RecargarSaldo() {
     const { documento, celular,monto } = formValues;
     const handleSubmit = async(e) =>{
         e.preventDefault();
+        if(validator.isEmpty( documento)){
+            return Swal.fire('Error', 'Documento incorrecto','error');
+        }
+       
+        if(!validator.isMobilePhone( celular,"any")){
+            return Swal.fire('Error', 'celular incorrecto','error');
+        }
+        if(!validator.isInt( monto)){
+            return Swal.fire('Error', 'Email incorrecto','error');
+        }
         const resp = await fetchSinToken( 'recargar-saldo', { documento,celular,monto }, 'POST' );
         const body = await resp.json();
         console.log(body)
-        if(body.ok)
+        if(body.ok){
+            Swal.fire('Excelente', 'Registro con exito','success');
             console.log(body.ok)
-        else{
+        }else{
             console.log(body.error)
         }
     }
