@@ -56,14 +56,13 @@ router.put(
       
       let user =await User.findById(id)
       if (user){
-        const recarga =user.saldo+nuevo_monto;
-        console.log(recarga);
+        const recarga =parseInt(user.saldo)+parseInt(nuevo_monto);
         user.saldo = recarga;
         const recargarSaldo = await User.findByIdAndUpdate(id,user,{new:true});
         res.status(200).json({ ok:true ,user })
         
       }else{
-        res.status(404).json({ id: 'Documento no registrado' })
+        res.status(404).json({ error: `${uid} invalido` })
       }
     } catch (error) {
       res.status(500).json({ ok: false, error })
@@ -100,14 +99,15 @@ router.post(
 //consultar-saldo
 router.post('/consultar-saldo',
   [
+    check('id', 'El id es obligatorio').not().isEmpty(),
     check('documento', 'El documento es obligatorio').not().isEmpty(),
     check('celular', 'El celular es obligatorio').not().isEmpty(),
     validarCampos
   ],
   async(req, res) => {
-    const { docuemnto, celular } = req.body;
+    const { docuemnto, celular,id } = req.body;
     try {
-      let user =await User.findOne({docuemnto})
+      let user =await User.findById(id)
       if (user){
         
         res.status(200).json({ ok:true ,user })
@@ -115,7 +115,7 @@ router.post('/consultar-saldo',
         res.status(404).json({ error: 'Documento no registrado' })
       }
     } catch (error) {
-      res.status(500).json({ ok: false, error: error.keyValue })
+      res.status(500).json({ ok: false, error })
     }
     
   });

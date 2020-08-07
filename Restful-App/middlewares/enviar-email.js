@@ -27,7 +27,7 @@ const sendEmail = async(req, res = response, next)=>{
             console.log(error);
             return res.status(500).json({
                 ok: false,
-                msg: error
+                error
             });
             
         }else{
