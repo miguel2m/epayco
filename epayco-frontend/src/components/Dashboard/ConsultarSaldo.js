@@ -1,14 +1,16 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useForm } from '../../hooks/useForm';
 import { fetchSinToken } from '../../helper/fetchRest';
 import validator from 'validator';
 import Swal from 'sweetalert2';
 
 export default function ConsultarSaldo() {
+    const [user] = useState(JSON.parse(localStorage.getItem('user')));
     const [formValues, handleInputChange] = useForm({
-        documento: '',
-        celular: ''
+        documento: user.documento,
+        celular:  user.celular
     });
+    const id = user._id;
     const { documento, celular } = formValues;
     const handleSubmit = async(e) =>{
         e.preventDefault();
@@ -22,13 +24,14 @@ export default function ConsultarSaldo() {
         if(!validator.isMobilePhone( celular,"any")){
             return Swal.fire('Error', 'celular incorrecto','error');
         }
-        const resp = await fetchSinToken( 'consultar-saldo', { documento,celular }, 'POST' );
+        const resp = await fetchSinToken( 'consultar-saldo', { id,documento,celular }, 'POST' );
         const body = await resp.json();
         console.log(body)
         if(body.ok){
             console.log(body.ok)
+            return Swal.fire(JSON.stringify(body.user.saldo),'Saldo' ,'info');
         }else{
-            console.log(body.error)
+            return Swal.fire('Error',body.error,'error');
         }
     }
     
@@ -76,19 +79,14 @@ export default function ConsultarSaldo() {
                                     className="btn btn-primary"
                                     //onClick={handleLogin}
                                 >
+                                    
                                     Consultar Saldo
                                 </button>                           
                             </div>
                         </form>
                     </div>
                     
-                    <div className="col-md-4">
-                        <div className="card-body ">
-                            <h4>Saldo: </h4>
-                            <p>123456</p>
-                        </div>                        
-                        
-                    </div>
+                   
                 </div>
             
             <hr />

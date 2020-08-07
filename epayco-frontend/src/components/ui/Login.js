@@ -22,7 +22,7 @@ export default function Login() {
         const body = await resp.json();
         console.log(body)
         if(body.ok){
-            localStorage.setItem('email', body.token );
+            localStorage.setItem('user', JSON.stringify( body.user) );
             localStorage.setItem('token', body.token ); //LocalStorage del token
             window.location.reload();
 
