@@ -10,7 +10,7 @@ export default function RecargarSaldo() {
         
         documento: user.documento,
         celular: user.celular,
-        nuevo_monto: 0
+        nuevo_monto: '0'
     });
     const id = user._id;
     
