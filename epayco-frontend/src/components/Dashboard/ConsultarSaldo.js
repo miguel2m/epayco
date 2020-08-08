@@ -5,7 +5,7 @@ import validator from 'validator';
 import Swal from 'sweetalert2';
 
 export default function ConsultarSaldo() {
-    const [user] = useState(JSON.parse(localStorage.getItem('user')));
+    const [user] = useState(JSON.parse(localStorage.getItem('user2')));
     const [formValues, handleInputChange] = useForm({
         documento: user.documento,
         celular:  user.celular

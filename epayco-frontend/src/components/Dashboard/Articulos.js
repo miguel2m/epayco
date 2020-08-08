@@ -3,7 +3,7 @@ import { heroes } from '../../data/heroes';
 import ArticuloCard from './ArticuloCard';
 
 export default function Articulos() {
-   
+    
     return (
         <div className="container">
             <h1>Catalogo</h1>

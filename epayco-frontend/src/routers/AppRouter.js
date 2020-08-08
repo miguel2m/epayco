@@ -1,66 +1,72 @@
-import React, { useState } from 'react'
+import React, { useContext } from 'react'
 
 import {
     BrowserRouter as Router,
     Switch,
     Redirect
-  } from "react-router-dom";
+  } from 'react-router-dom';
 
-import Login from '../components/ui/Login';
-import Signup from '../components/ui/SignUp';
 import { PublicRoute } from './PublicRoute';
 import { PrivateRoute } from './PrivateRoute';
+import { AuthContext } from '../auth/AuthContext';
+import Login from '../components/ui/Login';
+import Signup from '../components/ui/SignUp';
+
 import Articulos from '../components/Dashboard/Articulos';
 import ConsultarSaldo from '../components/Dashboard/ConsultarSaldo';
 import RecargarSaldo from '../components/Dashboard/RecargarSaldo';
 import { Navbar } from '../components/ui/Navbar';
 
 
+
 export default function AppRouter() {
-    const [values] = useState(localStorage.getItem('token'));
+    const { user } = useContext(AuthContext );
     
     
     return (
         <Router>
             <div>
-                <Navbar/>
+            <Navbar />
                 <div className="container mt-2">
                 <Switch> 
                     <PublicRoute 
                         exact 
                         path="/login" 
                         component={ Login }
-                        isAuthenticated={ !!values }
+                        isAuthenticated={ user.logged }
                     />
-
+                    
                     <PublicRoute 
                         exact 
                         path="/nuevo-usuario" 
                         component={ Signup }
-                        isAuthenticated={ !!values }
+                        isAuthenticated={ user.logged }
                     />
 
                     <PrivateRoute 
                         exact 
                         path="/catalogo" 
-                        component={ Articulos } 
-                        isAuthenticated={ !!values }
+                        component={ Articulos   }
+                        isAuthenticated={ user.logged }
                     />
-                    
+
                     <PrivateRoute 
                         exact 
                         path="/consultar-saldo" 
-                        component={ ConsultarSaldo } 
-                        isAuthenticated={ !!values }
+                        component={ ConsultarSaldo  }
+                        isAuthenticated={ user.logged }
                     />
+
                     <PrivateRoute 
                         exact 
                         path="/recargar-saldo" 
-                        component={ RecargarSaldo } 
-                        isAuthenticated={ !!values }
+                        component={ RecargarSaldo  }
+                        isAuthenticated={ user.logged }
                     />
-                    
-                    <Redirect to="/catalogo" />  
+
+
+                    <Redirect to="/login" />
+
                 </Switch>
                 </div>
             </div>
