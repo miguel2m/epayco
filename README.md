@@ -1,2 +1,0 @@
-# epayco
-Full Stack - Interview 
