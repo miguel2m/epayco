@@ -34,6 +34,7 @@ router.post(
         await user.save();
         res.status(201).json({ ok: true })
       }
+      res.status(400).json({ ok: false, error: 'Usuario registrado' })
     } catch (error) {
       res.status(500).json({ ok: false, error: error.keyValue })
     }
