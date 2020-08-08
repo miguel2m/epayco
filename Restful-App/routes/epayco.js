@@ -5,10 +5,14 @@
 const { Router } = require('express');
 const { check } = require('express-validator'); // Validator
 var nodemailer = require('nodemailer');//Envia correos
+const { generarJWT } = require('../helpers/jwt'); // JWT Tokens
+
 const { validarCampos } = require('../middlewares/validar-campos');
 
 const { validarJWT } = require('../middlewares/validar-jwt');// Valida Tokens
 const { sendEmail } = require('../middlewares/enviar-email');// Valida Tokens
+
+const User = require('../models/User')
 
 const router = Router();
 
@@ -21,31 +25,56 @@ router.post(
     check('email', 'El email es obligatorio').isEmail(),
     check('celular', 'El celular es obligatorio').not().isEmpty(),
     validarCampos
-  ], (req, res) => {
+  ], async(req, res) => {
     const { docuemnto, nombre, email, celular } = req.body;
-
-    res.send('nuevo-usuario')
+    try {
+      let user =await User.findOne({email})
+      if (!user){
+        const user = new User(req.body);
+        await user.save();
+        res.status(201).json({ ok: true })
+      }
+    } catch (error) {
+      res.status(500).json({ ok: false, error: error.keyValue })
+    }
+    
   });
 
 //recargar-saldo
-router.post(
+router.put(
   '/recargar-saldo',
   [
+    check('id', 'El id es obligatorio').not().isEmpty(),
     check('documento', 'El documento es obligatorio').not().isEmpty(),
     check('celular', 'El celular es obligatorio').not().isEmpty(),
-    check('monto', 'El monto es obligatorio').isInt(),
+    check('nuevo_monto', 'El monto es obligatorio').isInt(),
     validarCampos
   ],
-  (req, res) => {
-    const { docuemnto, cular, monto } = req.body;
-    res.send('recargar-saldo')
+  async(req, res) => {
+    const { id,docuemnto, celular,nuevo_monto } = req.body;
+    try {
+      
+      let user =await User.findById(id)
+      if (user){
+        const recarga =parseInt(user.saldo)+parseInt(nuevo_monto);
+        user.saldo = recarga;
+        const recargarSaldo = await User.findByIdAndUpdate(id,user,{new:true});
+        res.status(200).json({ ok:true ,user })
+        
+      }else{
+        res.status(404).json({ error: `${uid} invalido` })
+      }
+    } catch (error) {
+      res.status(500).json({ ok: false, error })
+    }
+    
   });
 
 //pagar
 router.post(
   '/pagar',
   [
-    check('id_sesion', 'El id de sesion es obligatorio').isString(),
+    check('token', 'El token es obligatorio').isJWT(),
     check('email', 'El email es obligatorio').isEmail(),
     validarCampos,
     sendEmail
@@ -58,8 +87,6 @@ router.post(
 router.post(
   '/confirmar',
   [
-    check('id_sesion', 'Debe estar registrado').not().isEmpty(),
-    validarCampos,
     validarJWT
   ],
   (req, res) => {
@@ -68,15 +95,27 @@ router.post(
   });
 
 //consultar-saldo
-router.get('/consultar-saldo',
+router.post('/consultar-saldo',
   [
+    check('id', 'El id es obligatorio').not().isEmpty(),
     check('documento', 'El documento es obligatorio').not().isEmpty(),
     check('celular', 'El celular es obligatorio').not().isEmpty(),
     validarCampos
   ],
-  (req, res) => {
-    const { docuemnto, cular } = req.body;
-    res.json({ ok: true })
+  async(req, res) => {
+    const { docuemnto, celular,id } = req.body;
+    try {
+      let user =await User.findById(id)
+      if (user){
+        
+        res.status(200).json({ ok:true ,user })
+      }else{
+        res.status(404).json({ error: 'Documento no registrado' })
+      }
+    } catch (error) {
+      res.status(500).json({ ok: false, error })
+    }
+    
   });
 
 
@@ -84,25 +123,36 @@ router.get('/consultar-saldo',
 router.post(
   '/login',
   [
-    check('email', 'El documento es obligatorio').isEmail(),
-    check('password', 'La contraseña es obligatorio').not().isEmpty(),
+    check('email', 'El email es obligatorio').isEmail(),
     validarCampos
-  ], (req, res) => {
-    const { email, documento } = req.body;
-    //TODO enviar UID
-    res.send('login')
+  ],async (req, res) => {
+    const { email } = req.body;
+    try {
+      let user =await User.findOne({email})
+      console.log(user)
+      if (user){
+        // Generar JWT
+        const token = await generarJWT(  req.email );
+        //TODO enviar UID
+        res.status(200).json({ ok: true , token , user })
+      }else{
+        res.status(400).json({ ok: false , error: `Email no registrado` })
+      }
+    } catch (error) {
+      res.status(500).json({ ok: false,  error })
+    }
+    
   });
 
 //Cerrar sesion
 router.post(
   '/logout',
   [
-    check('email', 'El documento es obligatorio').isEmail(),
-    check('password', 'La contraseña es obligatorio').not().isEmpty(),
+    check('email', 'El email es obligatorio').isEmail(),
     validarCampos
   ], (req, res) => {
-    const { email, documento } = req.body;
-    res.send('logout')
+    const { email} = req.body;
+    res.status(200).json({ ok: true })
   });
 
 
