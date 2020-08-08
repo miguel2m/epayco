@@ -18,15 +18,14 @@ const fetchSinToken = ( endpoint, data, method = 'POST' ) => {
 const fetchConToken = ( endpoint, data, method = 'POST' ) => {
 
     const url = `${ baseUrl }/${ endpoint }`;
-    const token = localStorage.getItem('token') || '';
+    const token = data.value;
 
         return fetch( url, {
             method,
             headers: {
                 'Content-type': 'application/json',
                 'x-token': token
-            },
-            body: JSON.stringify( data )
+            }
         });
     
 }

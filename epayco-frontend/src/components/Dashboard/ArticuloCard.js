@@ -1,53 +1,68 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Swal from 'sweetalert2';
+import validator from 'validator';
+import { fetchConToken, fetchSinToken } from '../../helper/fetchRest';
 
 export default function ArticuloCard({
-    history,
     id,
     superhero,
     alter_ego,
     first_appearance,
     characters,
 }) {
-    //const ipAPI = '//api.ipify.org?format=json';
-    /*const inputValue = fetch(ipAPI)
-        .then(response => response.json())
-        .then(data => data.ip)*/
+    const [user] = useState(JSON.parse(localStorage.getItem('user')));
+    const [token] = useState(localStorage.getItem('token'));
+
+    const email = user.email;
+    
 
 
     const handlePagar = async () => {
-        
-        const { value: token } = await Swal.fire({
-            title: 'Ingresar Token',
-            input: 'text',
-            //inputValue: inputValue,
-            showCancelButton: true,
-            inputValidator: (value) => {
-                if (!value) {
-                return 'Es obligario ingresar el TOKEN'
+        Swal.showLoading()
+        const resp = await fetchSinToken( 'pagar', { email , token }, 'POST' );
+        const body = await resp.json();
+
+        if(!body.ok)
+            return Swal.fire(JSON.stringify(body.error),'Error Servidor' ,'error');
+        else{
+            const { value } = await Swal.fire({
+                title: 'Ingresar Token',
+                input: 'text',
+                //inputValue: inputValue,
+                showCancelButton: true,
+                inputValidator: (value) => {
+                    if (!value) {
+                    return 'Es obligario ingresar el TOKEN'
+                    }
+                
+                    if (!validator.isJWT(value)){
+                        return 'Es obligario ingresar un token valido'    
+                    }
                 }
-                const re = /^[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?$/;
-                if (!re.test(value)){
-                    return 'Es obligario ingresar un token valido'    
-                }
+                })
+            if (value) {
+                const resp = await fetchConToken( 'confirmar', {value}, 'POST' );
+                const body = await resp.json();
+                console.log(body)
+                if(body.ok)
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Compra confirmada',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                else
+                    return Swal.fire('Error',body.error,'error');
+
+            }else{
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'error',
+                    title: 'Cancelado',
+                    showConfirmButton: true
+                })
             }
-            })
-        if (token) {
-            Swal.fire({
-                position: 'top-end',
-                icon: 'success',
-                title: 'Your work has been saved',
-                showConfirmButton: false,
-                timer: 1500
-              })
-        }else{
-            Swal.fire({
-                position: 'top-end',
-                icon: 'error',
-                title: 'Cancelado',
-                showConfirmButton: false,
-                timer: 1500
-              })
         }
     }
 
