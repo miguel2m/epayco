@@ -71,7 +71,7 @@ export default function ArticuloCard({
         <div className="card ms-3 animate__animated animate__fadeIn" style={{ maxWidth: 540 }}>
             <div className="row no-gutters">
                 <div className="col-md-4">
-                    <img src={`./assets/${id}.jpg`} className="card-img" alt={superhero} />
+                    <img src={`${window.location.origin }/assets/${id}.jpg`} className="card-img" alt={superhero} />
                 </div>
                 <div className="col-md-8">
 

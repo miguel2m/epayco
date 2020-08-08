@@ -11,7 +11,7 @@ export const Navbar = () => {
             
             <Link 
                 className="navbar-brand" 
-                to={ `./` }
+                to={ `./catalogo` }
             >
                 Epayco
             </Link>
@@ -54,8 +54,17 @@ export const Navbar = () => {
                         className="btn btn-outline-danger"
                         onClick={ handleLogout }
                     >
-                        <i className="fas fa-sign-out-alt"></i>
-                        <span> Salir</span>
+                        <i className="fas fa-sign-out-alt">
+
+                        <span> 
+                            <Link 
+                                className="navbar-brand" 
+                                to={ `./login` }
+                            >
+                                Salir
+                            </Link>     
+                        </span>
+                        </i>
                     </button>
                 </ul>
             </div>
