@@ -1,11 +1,11 @@
 const baseUrl = process.env.REACT_APP_API_URL;
 
-const fetchSinToken = ( endpoint, data, method = 'POST' ) => {
+const fetchSinToken =  ( endpoint, data, method = 'POST' ) => {
 
     const url = `${ baseUrl }/${ endpoint }`;
 
     
-        return fetch( url, {
+        return  fetch( url, {
             method,
             headers: {
                 'Content-type': 'application/json'

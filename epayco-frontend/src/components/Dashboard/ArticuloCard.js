@@ -10,7 +10,7 @@ export default function ArticuloCard({
     first_appearance,
     characters,
 }) {
-    const [user] = useState(JSON.parse(localStorage.getItem('user')));
+    const [user] = useState(JSON.parse(localStorage.getItem('user2')));
     const [token] = useState(localStorage.getItem('token'));
 
     const email = user.email;

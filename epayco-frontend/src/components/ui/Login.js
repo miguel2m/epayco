@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { useForm } from '../../hooks/useForm';
 import { fetchSinToken } from '../../helper/fetchRest';
 import validator from 'validator';
 import Swal from 'sweetalert2';
+import { AuthContext } from '../../auth/AuthContext';
+import { types } from '../../types/types';
 
-export default function Login() {
-    
+export default function Login({history}) {
+    const { dispatch } = useContext( AuthContext );
     const [formValues, handleInputChange] = useForm({
         email: ''
     });
@@ -14,18 +16,24 @@ export default function Login() {
 
     const {  email } = formValues;
 
-    const handleSubmit = async(e) =>{
+    const handleSubmit =async (e) =>{
         e.preventDefault();
-        Swal.showLoading()
         formValid();
         //return Swal.fire('Error', 'Las contraseñas deben de ser iguales','error');
         const resp = await fetchSinToken( 'login', { email }, 'POST' );
         const body = await resp.json();
         console.log(body)
         if(body.ok){
-            localStorage.setItem('user', JSON.stringify( body.user) );
+            localStorage.setItem('user2', JSON.stringify( body.user) );
             localStorage.setItem('token', body.token ); //LocalStorage del token
-            
+            const lastPath = localStorage.getItem('lastPath') || '/catalogo';
+            dispatch({
+                type: types.login,
+                payload: {
+                    name: body.user.nombre
+                }
+            });
+            history.replace(lastPath)
             window.location.reload();
 
         }else{
@@ -71,7 +79,10 @@ export default function Login() {
                                     className="btn btn-primary"
                                     //onClick={handleLogin}
                                 >
-                                    Login
+                                    
+                                    
+                                        Iniciar sesion
+                                    
                                 </button>  
                             </div>
                         </form>
