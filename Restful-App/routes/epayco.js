@@ -74,7 +74,7 @@ router.put(
 router.post(
   '/pagar',
   [
-    check('token', 'El token es obligatorio').isString(),
+    check('token', 'El token es obligatorio').isJWT(),
     check('email', 'El email es obligatorio').isEmail(),
     validarCampos,
     sendEmail
@@ -87,8 +87,6 @@ router.post(
 router.post(
   '/confirmar',
   [
-    check('token', 'Debe estar registrado').not().isEmpty(),
-    validarCampos,
     validarJWT
   ],
   (req, res) => {
