@@ -16,6 +16,7 @@ export default function Login() {
 
     const handleSubmit = async(e) =>{
         e.preventDefault();
+        Swal.showLoading()
         formValid();
         //return Swal.fire('Error', 'Las contraseñas deben de ser iguales','error');
         const resp = await fetchSinToken( 'login', { email }, 'POST' );
@@ -24,6 +25,7 @@ export default function Login() {
         if(body.ok){
             localStorage.setItem('user', JSON.stringify( body.user) );
             localStorage.setItem('token', body.token ); //LocalStorage del token
+            
             window.location.reload();
 
         }else{
